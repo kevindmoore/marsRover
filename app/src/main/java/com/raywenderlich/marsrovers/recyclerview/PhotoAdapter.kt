@@ -25,7 +25,7 @@ class PhotoAdapter(private var photoList: ArrayList<PhotoRow>) : RecyclerView.Ad
     }
 
     fun updatePhotos(photos : ArrayList<PhotoRow>) {
-        DiffUtil.calculateDiff(PhotoRowDiffCallback(photos, photoList)).dispatchUpdatesTo(this)
+        DiffUtil.calculateDiff(PhotoRowDiffCallback(photos, photoList), false).dispatchUpdatesTo(this)
         photoList = photos
         clearFilter()
     }
@@ -46,9 +46,8 @@ class PhotoAdapter(private var photoList: ArrayList<PhotoRow>) : RecyclerView.Ad
 
     fun filterCamera(camera: String) {
         filtering = true
-        filteredPhotos.clear()
         val newPhotos = photoList.filter { photo -> photo.type == ROW_TYPE.PHOTO && photo.photo?.camera?.name.equals(camera) } as ArrayList<PhotoRow>
-        DiffUtil.calculateDiff(PhotoRowDiffCallback(newPhotos, photoList)).dispatchUpdatesTo(this)
+        DiffUtil.calculateDiff(PhotoRowDiffCallback(newPhotos, photoList), false).dispatchUpdatesTo(this)
         filteredPhotos = newPhotos
     }
 

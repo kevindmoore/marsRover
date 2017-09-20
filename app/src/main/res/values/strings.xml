@@ -13,11 +13,13 @@
         <item>Rear Hazard</item>
         <item>Navigation</item>
         <item>Panoramic</item>
+        <item>Mast</item>
     </string-array>
     <string-array name="camera_values">
         <item>FHAZ</item>
         <item>RHAZ</item>
         <item>NAVCAM</item>
         <item>PANCAM</item>
+        <item>MAST</item>
     </string-array>
 </resources>

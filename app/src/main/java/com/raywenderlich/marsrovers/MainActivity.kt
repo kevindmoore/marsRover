@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        recycler_view.visibility = View.GONE
         setupSpinners()
         // Add Line separator
         recycler_view.addItemDecoration(DividerItemDecoration(this@MainActivity, DividerItemDecoration.VERTICAL))
@@ -83,7 +84,9 @@ class MainActivity : AppCompatActivity() {
     }
 
      fun loadPhotos() {
-        NASAPhotos.getPhotos(currentRover).enqueue(object : Callback<PhotoList> {
+         progress.visibility = View.VISIBLE
+         recycler_view.visibility = View.GONE
+         NASAPhotos.getPhotos(currentRover).enqueue(object : Callback<PhotoList> {
             override fun onFailure(call: Call<PhotoList>?, t: Throwable?) {
                 Snackbar.make(recycler_view, R.string.api_error, Snackbar.LENGTH_LONG)
                 Log.e(TAG, "Problems getting Photos with error: $t.msg")
@@ -101,6 +104,9 @@ class MainActivity : AppCompatActivity() {
                         } else {
                             (recycler_view.adapter as PhotoAdapter).updatePhotos(sortPhotos(photoResponse.body()!!))
                         }
+                        recycler_view.scrollToPosition(0)
+                        recycler_view.visibility = View.VISIBLE
+                        progress.visibility = View.GONE
                     }
                 }
             }
