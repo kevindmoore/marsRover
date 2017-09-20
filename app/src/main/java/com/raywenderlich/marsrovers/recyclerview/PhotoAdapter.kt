@@ -1,5 +1,6 @@
 package com.raywenderlich.marsrovers.recyclerview
 
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -16,9 +17,6 @@ class PhotoAdapter(private var photoList: ArrayList<PhotoRow>) : RecyclerView.Ad
     private var filtering = false
     private var layoutInflator: LayoutInflater? = null
 
-
-    init {
-    }
     override fun getItemCount(): Int {
         if (filtering) {
             return filteredPhotos.size
@@ -27,15 +25,14 @@ class PhotoAdapter(private var photoList: ArrayList<PhotoRow>) : RecyclerView.Ad
     }
 
     fun updatePhotos(photos : ArrayList<PhotoRow>) {
+        DiffUtil.calculateDiff(PhotoRowDiffCallback(photos, photoList)).dispatchUpdatesTo(this)
         photoList = photos
         clearFilter()
-        notifyDataSetChanged()
     }
 
     private fun clearFilter() {
         filtering = false
         filteredPhotos.clear()
-        notifyDataSetChanged()
     }
 
     fun removeRow(row : Int) {
@@ -50,8 +47,9 @@ class PhotoAdapter(private var photoList: ArrayList<PhotoRow>) : RecyclerView.Ad
     fun filterCamera(camera: String) {
         filtering = true
         filteredPhotos.clear()
-        filteredPhotos = photoList.filter { photo -> photo.type == ROW_TYPE.PHOTO && photo.photo?.camera?.name.equals(camera) } as ArrayList<PhotoRow>
-        notifyDataSetChanged()
+        val newPhotos = photoList.filter { photo -> photo.type == ROW_TYPE.PHOTO && photo.photo?.camera?.name.equals(camera) } as ArrayList<PhotoRow>
+        DiffUtil.calculateDiff(PhotoRowDiffCallback(newPhotos, photoList)).dispatchUpdatesTo(this)
+        filteredPhotos = newPhotos
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -100,4 +98,21 @@ class PhotoAdapter(private var photoList: ArrayList<PhotoRow>) : RecyclerView.Ad
         }
     }
 
+    class PhotoRowDiffCallback(val newRows : List<PhotoRow>, val oldRows : List<PhotoRow>) : DiffUtil.Callback() {
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val oldRow = oldRows[oldItemPosition]
+            val newRow = newRows[newItemPosition]
+            return oldRow.type == newRow.type
+        }
+
+        override fun getOldListSize(): Int = oldRows.size
+
+        override fun getNewListSize(): Int = newRows.size
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val oldRow = oldRows[oldItemPosition]
+            val newRow = newRows[newItemPosition]
+            return oldRow.equals(newRow)
+        }
+    }
 }
