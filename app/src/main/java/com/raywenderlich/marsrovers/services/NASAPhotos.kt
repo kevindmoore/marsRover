@@ -8,24 +8,24 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 
 object NASAPhotos {
-    const val TAG = "NASAPhotos"
-    val service : NASAApi
+  private const val TAG = "NASAPhotos"
+  private val service: NASAApi
 
-    init {
-        val retrofit = Retrofit.Builder()
-                .baseUrl("https://api.nasa.gov/")
-                .addConverterFactory(MoshiConverterFactory.create())
-                .build()
-        service = retrofit.create(NASAApi::class.java)
-    }
+  init {
+    val retrofit = Retrofit.Builder()
+        .baseUrl("https://api.nasa.gov/")
+        .addConverterFactory(MoshiConverterFactory.create())
+        .build()
+    service = retrofit.create(NASAApi::class.java)
+  }
 
-    fun getPhotos(rover: String) : Call<PhotoList> {
-        try {
-            return service.getPhotos(rover)
-        } catch (e : Exception) {
-            Log.e(TAG, "Problems getting Photos", e)
-            return ErrorCall(e)
-        }
+  fun getPhotos(rover: String): Call<PhotoList> {
+    return try {
+      service.getPhotos(rover)
+    } catch (e: Exception) {
+      Log.e(TAG, "Problems getting Photos", e)
+      ErrorCall(e)
     }
+  }
 
 }

@@ -1,8 +1,9 @@
 package com.raywenderlich.marsrovers.models
 
 
-enum class ROW_TYPE {
-    PHOTO,
-    HEADER
+enum class RowType {
+  PHOTO,
+  HEADER
 }
-data class PhotoRow(var type: ROW_TYPE, var photo: Photo?, var header: String?)
+
+data class PhotoRow(var type: RowType, var photo: Photo?, var header: String?)
