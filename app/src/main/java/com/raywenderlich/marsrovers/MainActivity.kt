@@ -32,9 +32,9 @@ class MainActivity : AppCompatActivity() {
     setContentView(R.layout.activity_main)
 
     recycler_view.visibility = View.GONE
-    setupSpinners()
     recycler_view.addItemDecoration(DividerItemDecoration(this@MainActivity, DividerItemDecoration.VERTICAL))
     recycler_view.layoutManager = LinearLayoutManager(this@MainActivity)
+    setupSpinners()
     loadPhotos()
   }
 
